@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi } from 'vitest'
-import type { Product } from '../../../shared/types'
+import type { Product } from '@/shared/types'
 import { ProductCard } from './ProductCard'
 
 const mockProduct: Product = {

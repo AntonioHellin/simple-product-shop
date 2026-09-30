@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi } from 'vitest'
-import type { Product } from '../../shared/types'
-import { ProductCatalog } from './ProductCatalog'
+import type { Product } from '@/shared/types'
+import { ProductCatalog } from '@/features/product-catalog'
 
 const { mockProducts } = vi.hoisted(() => ({
   mockProducts: [
@@ -21,6 +21,16 @@ const { mockProducts } = vi.hoisted(() => ({
       description: 'Description 2',
     },
   ] as Product[],
+}))
+
+vi.mock('@/shared/data/products', () => ({
+  products: mockProducts,
+  mockProducts: mockProducts,
+}))
+
+vi.mock('@/shared/data', () => ({
+  products: mockProducts,
+  mockProducts: mockProducts,
 }))
 
 vi.mock('../../shared/data/products', () => ({
