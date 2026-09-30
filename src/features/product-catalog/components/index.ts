@@ -1,2 +1,1 @@
-// Product catalog components
-export {}
+export * from './ProductCard'
