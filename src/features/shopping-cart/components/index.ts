@@ -1,2 +1,2 @@
-// Shopping cart components
-export {}
+export { CartItem } from './CartItem'
+export { CartSummary } from './CartSummary'

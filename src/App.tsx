@@ -1,9 +1,33 @@
 import { ProductCatalog } from '@/features/product-catalog'
-import type { Product } from '@/shared/types'
+import { CartItem, CartSummary } from '@/features/shopping-cart'
+import type { CartItem as CartItemType, Product } from '@/shared/types'
+
+const sampleCartItem: CartItemType = {
+  product: {
+    id: 1,
+    name: 'Oceanic Diving Mask & Snorkel',
+    price: 49.99,
+    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&auto=format&fit=crop&q=80',
+    description: 'Máscara panorámica de silicona hipoalergénica con lente de cristal templado y tubo seco.',
+  },
+  quantity: 2,
+}
 
 function App() {
   const handleAddToCart = (product: Product) => {
     console.log('Product added to cart:', product)
+  }
+
+  const handleUpdateQuantity = (quantity: number) => {
+    console.log('Update quantity to:', quantity)
+  }
+
+  const handleRemoveItem = () => {
+    console.log('Remove item from cart')
+  }
+
+  const handleCheckout = () => {
+    console.log('Proceeding to checkout')
   }
 
   return (
@@ -45,8 +69,46 @@ function App() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
         <ProductCatalog onAddToCart={handleAddToCart} />
+
+        {/* Temporary Preview Section */}
+        <section className="pt-8 border-t border-sky-100">
+          <div className="mb-6">
+            <span className="text-xs font-semibold uppercase tracking-wider text-cyan-700">
+              Visual Preview (Temporary)
+            </span>
+            <h2 className="text-2xl font-bold text-slate-900 mt-1">
+              Shopping Cart Components Preview
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <div className="lg:col-span-2 space-y-4">
+              <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">
+                Cart Items
+              </h3>
+              <CartItem
+                item={sampleCartItem}
+                onUpdateQuantity={handleUpdateQuantity}
+                onRemove={handleRemoveItem}
+              />
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">
+                Summary
+              </h3>
+              <CartSummary
+                subtotal={99.98}
+                discount={10.0}
+                total={89.98}
+                itemCount={2}
+                onCheckout={handleCheckout}
+              />
+            </div>
+          </div>
+        </section>
       </main>
 
       <footer className="mt-16 border-t border-sky-100/80 bg-white/40 py-8 text-center text-xs text-slate-400">
