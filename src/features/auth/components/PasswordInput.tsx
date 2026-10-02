@@ -89,8 +89,9 @@ export function PasswordInput({
           type="button"
           onClick={() => setShowPassword((prev) => !prev)}
           aria-label={showPassword ? 'Hide text' : 'Show text'}
+          aria-pressed={showPassword}
           disabled={disabled}
-          className="absolute right-2.5 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors focus:outline-none"
+          className="absolute right-2.5 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded transition-colors focus-visible:outline-2 focus-visible:outline-cyan-700 focus-visible:outline-offset-2"
         >
           {showPassword ? (
             <svg
@@ -143,7 +144,11 @@ export function PasswordInput({
       </div>
 
       {showRequirements && (
-        <ul className="flex flex-col gap-1 text-xs mt-1" data-testid="password-requirements">
+        <ul
+          className="flex flex-col gap-1 text-xs mt-1"
+          data-testid="password-requirements"
+          aria-label="Password requirements"
+        >
           {requirements.map((req) => (
             <li
               key={req.id}
@@ -154,6 +159,9 @@ export function PasswordInput({
               }`}
             >
               <span aria-hidden="true">{req.met ? '✓' : '✗'}</span>
+              <span className="sr-only">
+                {req.met ? 'Requirement met: ' : 'Requirement not met: '}
+              </span>
               <span>{req.label}</span>
             </li>
           ))}

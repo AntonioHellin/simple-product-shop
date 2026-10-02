@@ -73,7 +73,11 @@ function ShopApp() {
             </button>
 
             {/* Cart Icon with Item Count Badge */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-50 border border-sky-100 text-slate-700">
+            <div
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-50 border border-sky-100 text-slate-700"
+              aria-label={`Shopping cart with ${itemCount} ${itemCount === 1 ? 'item' : 'items'}`}
+              role="status"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-5 h-5 text-cyan-700"

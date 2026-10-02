@@ -1,1 +1,38 @@
 @import "tailwindcss";
+
+/* 
+  Global Accessible Focus-Visible Styles
+  - Visible high-contrast outline when navigating with keyboard (:focus-visible)
+  - Suppressed outline on mouse/touch clicks (:focus:not(:focus-visible))
+  - 2px outline-offset ensures no overlap with element borders or content
+*/
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible,
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #0e7490;
+  outline-offset: 2px;
+}
+
+/* 
+  Visually hidden utility for screen reader accessibility
+*/
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

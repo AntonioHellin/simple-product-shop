@@ -104,4 +104,20 @@ describe('LoginDemo', () => {
     expect(passwordInput).toBeDisabled()
     expect(submitBtn).toBeDisabled()
   })
+
+  it('shows error message and marks email invalid on blur when email format is invalid', async () => {
+    const user = userEvent.setup()
+    render(<LoginDemo />)
+
+    const emailInput = screen.getByLabelText(/email/i)
+
+    // Type invalid email format
+    await user.type(emailInput, 'antonio.hh6')
+    // Click outside or tab away to trigger onBlur
+    await user.tab()
+
+    expect(screen.getByText(/please enter a valid email address/i)).toBeInTheDocument()
+    expect(emailInput).toHaveAttribute('aria-invalid', 'true')
+  })
 })
+

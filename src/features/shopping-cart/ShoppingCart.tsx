@@ -1,6 +1,15 @@
 import { useCart } from '@/context/useCart'
 import { UI_TEXT } from '@/shared/constants'
+import { formatPrice } from '@/shared/utils'
 import { CartItem, CartSummary } from './components'
+
+function getCartAnnouncement(itemCount: number, formattedTotal: string, isEmpty: boolean): string {
+  if (isEmpty) {
+    return 'Shopping cart is empty'
+  }
+  const itemWord = itemCount === 1 ? 'item' : 'items'
+  return `Shopping cart updated: ${itemCount} ${itemWord}, total is ${formattedTotal}`
+}
 
 export function ShoppingCart() {
   const {
@@ -14,14 +23,31 @@ export function ShoppingCart() {
     removeItem,
   } = useCart()
 
+  const announcement = getCartAnnouncement(itemCount, formatPrice(total), items.length === 0)
+
   return (
     <section className="py-6">
+      {/* Live Region for Screen Readers to announce cart updates */}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+        data-testid="cart-live-region"
+      >
+        {announcement}
+      </div>
+
       {/* Title & Item Count Badge */}
       <div className="flex items-center gap-3 mb-6 pb-4 border-b border-sky-100">
         <h2 className="text-2xl font-bold tracking-tight text-slate-900">
           Shopping Cart
         </h2>
-        <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-100 text-cyan-800">
+        <span
+          className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-100 text-cyan-800"
+          aria-label={`${itemCount} ${itemCount === 1 ? 'item' : 'items'} in shopping cart`}
+          role="status"
+        >
           {itemCount}
         </span>
       </div>

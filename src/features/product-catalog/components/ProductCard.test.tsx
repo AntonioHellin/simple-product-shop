@@ -57,7 +57,19 @@ describe('ProductCard', () => {
     expect(handleAddToCart).toHaveBeenCalledWith(mockProduct)
   })
 
-  it('shows "Added!" on click and reverts to "Add to Cart" after 1.5s', () => {
+  it('shows "Adding..." loading state immediately on click', () => {
+    const handleAddToCart = () => new Promise(() => {}) // Pending promise
+
+    render(<ProductCard product={mockProduct} onAddToCart={handleAddToCart} />)
+
+    const button = screen.getByRole('button', { name: /add to cart/i })
+    fireEvent.click(button)
+
+    expect(screen.getByRole('button', { name: /adding\.\.\./i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /adding\.\.\./i })).toBeDisabled()
+  })
+
+  it('shows "Added!" on click and reverts to "Add to Cart" after 1.5s', async () => {
     vi.useFakeTimers()
     const handleAddToCart = vi.fn()
 
@@ -65,6 +77,10 @@ describe('ProductCard', () => {
 
     const button = screen.getByRole('button', { name: /add to cart/i })
     fireEvent.click(button)
+
+    await act(async () => {
+      await Promise.resolve()
+    })
 
     expect(screen.getByRole('button', { name: /added!/i })).toBeInTheDocument()
     expect(handleAddToCart).toHaveBeenCalledWith(mockProduct)
@@ -76,7 +92,56 @@ describe('ProductCard', () => {
     expect(screen.getByRole('button', { name: /add to cart/i })).toBeInTheDocument()
   })
 
-  it('continues to function during the "added" state transition', () => {
+  it('shows "Failed" error state when onAddToCart rejects', async () => {
+    vi.useFakeTimers()
+    const handleAddToCart = vi.fn().mockRejectedValue(new Error('Network error'))
+
+    render(<ProductCard product={mockProduct} onAddToCart={handleAddToCart} />)
+
+    const button = screen.getByRole('button', { name: /add to cart/i })
+    fireEvent.click(button)
+
+    await act(async () => {
+      await Promise.resolve()
+    })
+
+    expect(screen.getByRole('button', { name: /failed/i })).toBeInTheDocument()
+
+    act(() => {
+      vi.advanceTimersByTime(1500)
+    })
+
+    expect(screen.getByRole('button', { name: /add to cart/i })).toBeInTheDocument()
+  })
+
+  it('allows retrying when in error state', async () => {
+    vi.useFakeTimers()
+    const handleAddToCart = vi
+      .fn()
+      .mockRejectedValueOnce(new Error('Network error'))
+      .mockResolvedValueOnce(undefined)
+
+    render(<ProductCard product={mockProduct} onAddToCart={handleAddToCart} />)
+
+    const button = screen.getByRole('button', { name: /add to cart/i })
+    fireEvent.click(button)
+
+    await act(async () => {
+      await Promise.resolve()
+    })
+
+    const retryButton = screen.getByRole('button', { name: /failed/i })
+    fireEvent.click(retryButton)
+
+    await act(async () => {
+      await Promise.resolve()
+    })
+
+    expect(screen.getByRole('button', { name: /added!/i })).toBeInTheDocument()
+    expect(handleAddToCart).toHaveBeenCalledTimes(2)
+  })
+
+  it('continues to function during the "added" state transition', async () => {
     vi.useFakeTimers()
     const handleAddToCart = vi.fn()
 
@@ -84,10 +149,18 @@ describe('ProductCard', () => {
 
     const button = screen.getByRole('button', { name: /add to cart/i })
     fireEvent.click(button)
+
+    await act(async () => {
+      await Promise.resolve()
+    })
     expect(handleAddToCart).toHaveBeenCalledTimes(1)
 
     const addedButton = screen.getByRole('button', { name: /added!/i })
     fireEvent.click(addedButton)
+
+    await act(async () => {
+      await Promise.resolve()
+    })
     expect(handleAddToCart).toHaveBeenCalledTimes(2)
 
     act(() => {
