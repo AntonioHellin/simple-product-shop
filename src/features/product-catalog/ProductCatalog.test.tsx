@@ -71,4 +71,12 @@ describe('ProductCatalog', () => {
     expect(handleAddToCart).toHaveBeenCalledTimes(1)
     expect(handleAddToCart).toHaveBeenCalledWith(mockProducts[0])
   })
+
+  it('renders skeletons when isLoading is true', () => {
+    render(<ProductCatalog onAddToCart={() => {}} isLoading={true} />)
+
+    const skeletons = screen.getAllByTestId('product-card-skeleton')
+    expect(skeletons).toHaveLength(6)
+    expect(screen.queryByText('Product 1')).not.toBeInTheDocument()
+  })
 })

@@ -1,12 +1,20 @@
 import { useState } from 'react'
+import type { Product } from '@/shared/types'
 import { useCart } from '@/context/useCart'
 import { ProductCatalog } from '@/features/product-catalog'
 import { ShoppingCart } from '@/features/shopping-cart'
 import { LoginDemo } from '@/features/auth'
+import { Toast } from '@/shared/components'
 
 function ShopApp() {
   const { addItem, itemCount } = useCart()
   const [showAuthDemo, setShowAuthDemo] = useState(false)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
+
+  const handleAddToCart = (product: Product) => {
+    addItem(product)
+    setToastMessage(`"${product.name}" added to cart!`)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50/40 via-slate-50 to-cyan-50/20 text-slate-800 flex flex-col">
@@ -142,7 +150,7 @@ function ShopApp() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           {/* Left Column (Wider): Product Catalog */}
           <div className="lg:col-span-2">
-            <ProductCatalog onAddToCart={addItem} />
+            <ProductCatalog onAddToCart={handleAddToCart} />
           </div>
 
           {/* Right Column: Sticky Shopping Cart */}
@@ -151,6 +159,15 @@ function ShopApp() {
           </div>
         </div>
       </main>
+
+      {/* Global Notifications */}
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          variant="success"
+          onClose={() => setToastMessage(null)}
+        />
+      )}
 
       {/* Footer */}
       <footer className="mt-16 border-t border-sky-100/80 bg-white/40 py-8 text-center text-xs text-slate-400">

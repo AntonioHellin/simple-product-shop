@@ -1,12 +1,14 @@
 import type { Product } from '@/shared/types'
 import { products } from '@/shared/data/products'
 import { ProductCard } from '@/features/product-catalog/components/ProductCard'
+import { ProductCardSkeleton } from '@/features/product-catalog/components/ProductCardSkeleton'
 
 export interface ProductCatalogProps {
   onAddToCart: (product: Product) => void
+  isLoading?: boolean
 }
 
-export function ProductCatalog({ onAddToCart }: ProductCatalogProps) {
+export function ProductCatalog({ onAddToCart, isLoading = false }: ProductCatalogProps) {
   return (
     <section className="py-6">
       <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 border-b border-sky-100 pb-5">
@@ -24,13 +26,17 @@ export function ProductCatalog({ onAddToCart }: ProductCatalogProps) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onAddToCart={onAddToCart}
-          />
-        ))}
+        {isLoading
+          ? Array.from({ length: 6 }).map((_, index) => (
+              <ProductCardSkeleton key={`skeleton-${index}`} />
+            ))
+          : products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={onAddToCart}
+              />
+            ))}
       </div>
     </section>
   )
