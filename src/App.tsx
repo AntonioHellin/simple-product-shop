@@ -1,4 +1,5 @@
-import { CartProvider, useCart } from '@/context/CartContext'
+import { CartProvider } from '@/context/CartContext'
+import { useCart } from '@/context/useCart'
 import { ProductCatalog } from '@/features/product-catalog'
 import { ShoppingCart } from '@/features/shopping-cart'
 

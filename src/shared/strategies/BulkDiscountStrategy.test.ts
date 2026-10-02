@@ -26,11 +26,11 @@ describe('BulkDiscountStrategy', () => {
     strategy = new BulkDiscountStrategy()
   })
 
-  it('tiene el nombre correcto "Bulk Discount"', () => {
+  it('has the correct name "Bulk Discount"', () => {
     expect(strategy.name).toBe('Bulk Discount')
   })
 
-  it('NO es aplicable si ningún item tiene 5+ unidades', () => {
+  it('is NOT applicable if no item has 5+ units', () => {
     const items: CartItem[] = [
       { product: mockProduct1, quantity: BULK_DISCOUNT_THRESHOLD - 1 },
       { product: mockProduct2, quantity: 2 },
@@ -40,7 +40,7 @@ describe('BulkDiscountStrategy', () => {
     expect(strategy.isApplicable(items, subtotal)).toBe(false)
   })
 
-  it('ES aplicable si algún item tiene 5+ unidades', () => {
+  it('IS applicable if any item has 5+ units', () => {
     const items: CartItem[] = [
       { product: mockProduct1, quantity: BULK_DISCOUNT_THRESHOLD },
       { product: mockProduct2, quantity: 1 },
@@ -50,7 +50,7 @@ describe('BulkDiscountStrategy', () => {
     expect(strategy.isApplicable(items, subtotal)).toBe(true)
   })
 
-  it('calcula 10% correctamente para items que califican', () => {
+  it('calculates 10% correctly for qualifying items', () => {
     const items: CartItem[] = [
       { product: mockProduct1, quantity: BULK_DISCOUNT_THRESHOLD },
     ]
@@ -60,7 +60,7 @@ describe('BulkDiscountStrategy', () => {
     expect(strategy.calculate(items, subtotal)).toBe(expectedDiscount)
   })
 
-  it('si hay múltiples items, solo descuenta los que califican (no todos)', () => {
+  it('only discounts qualifying items when there are multiple items', () => {
     const items: CartItem[] = [
       { product: mockProduct1, quantity: BULK_DISCOUNT_THRESHOLD },
       { product: mockProduct2, quantity: 2 },
@@ -70,5 +70,9 @@ describe('BulkDiscountStrategy', () => {
     const expectedDiscount = qualifyingSubtotal * BULK_DISCOUNT_RATE
 
     expect(strategy.calculate(items, subtotal)).toBe(expectedDiscount)
+  })
+
+  it('returns 0 if the items array is empty', () => {
+    expect(strategy.calculate([], 0)).toBe(0)
   })
 })

@@ -1,25 +1,23 @@
 import type { CartItem } from '@/shared/types'
-import {
-  BULK_DISCOUNT_THRESHOLD,
-  BULK_DISCOUNT_RATE,
-  BULK_DISCOUNT,
-} from '@/shared/constants/businessRules'
+import { businessRules } from '@/shared/constants/businessRules'
 import type { DiscountStrategy } from './DiscountStrategy'
 
 export class BulkDiscountStrategy implements DiscountStrategy {
   readonly name = 'Bulk Discount'
-  readonly description = BULK_DISCOUNT.LABEL
+  readonly description = businessRules.bulkDiscount.label
 
   isApplicable(items: CartItem[], _subtotal: number): boolean {
-    return items.some((item) => item.quantity >= BULK_DISCOUNT_THRESHOLD)
+    return items.some((item) => item.quantity >= businessRules.bulkDiscount.threshold)
   }
 
   calculate(items: CartItem[], _subtotal: number): number {
+    if (items.length === 0) return 0
+
     return items.reduce((totalDiscount, item) => {
-      if (item.quantity >= BULK_DISCOUNT_THRESHOLD) {
-        return totalDiscount + item.product.price * item.quantity * BULK_DISCOUNT_RATE
+      if (item.quantity < businessRules.bulkDiscount.threshold) {
+        return totalDiscount
       }
-      return totalDiscount
+      return totalDiscount + item.product.price * item.quantity * businessRules.bulkDiscount.percentage
     }, 0)
   }
 }

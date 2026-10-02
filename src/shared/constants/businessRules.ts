@@ -17,10 +17,28 @@ export const ORDER_DISCOUNT = {
   LABEL: '15% off ($100+ orders)',
 } as const
 
+export const businessRules = {
+  quantity: {
+    min: QUANTITY_LIMITS.MIN,
+    max: QUANTITY_LIMITS.MAX,
+  },
+  bulkDiscount: {
+    threshold: BULK_DISCOUNT.MIN_QUANTITY,
+    percentage: BULK_DISCOUNT.PERCENTAGE,
+    label: BULK_DISCOUNT.LABEL,
+  },
+  orderDiscount: {
+    threshold: ORDER_DISCOUNT.MIN_SUBTOTAL,
+    percentage: ORDER_DISCOUNT.PERCENTAGE,
+    label: ORDER_DISCOUNT.LABEL,
+  },
+} as const
+
 export const BUSINESS_RULES = {
   QUANTITY: QUANTITY_LIMITS,
   BULK_DISCOUNT,
   ORDER_DISCOUNT,
+  ...businessRules,
 } as const
 
 // Convenience aliases for direct imports

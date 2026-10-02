@@ -1,6 +1,4 @@
 import {
-  createContext,
-  useContext,
   useReducer,
   useEffect,
   useRef,
@@ -8,34 +6,15 @@ import {
   useCallback,
   type ReactNode,
 } from 'react'
-import type { CartItem, Product } from '@/shared/types'
+import type { Product } from '@/shared/types'
 import { calculateSubtotal } from '@/shared/utils'
-import { DiscountCalculator, type DiscountBreakdownItem } from '@/shared/strategies'
-
-export type { DiscountBreakdownItem }
-
-export type CartAction =
-  | { type: 'ADD_ITEM'; payload: Product }
-  | { type: 'REMOVE_ITEM'; payload: number }
-  | { type: 'UPDATE_QUANTITY'; payload: { productId: number; quantity: number } }
-  | { type: 'CLEAR_CART' }
-
-export interface CartState {
-  items: CartItem[]
-}
-
-export interface CartContextType {
-  items: CartItem[]
-  itemCount: number
-  subtotal: number
-  discount: number
-  total: number
-  discountBreakdown: DiscountBreakdownItem[]
-  addItem: (product: Product) => void
-  removeItem: (productId: number) => void
-  updateQuantity: (productId: number, quantity: number) => void
-  clearCart: () => void
-}
+import { DiscountCalculator } from '@/shared/strategies'
+import { businessRules } from '@/shared/constants/businessRules'
+import {
+  CartContext,
+  type CartState,
+  type CartAction,
+} from './CartContextValue'
 
 const STORAGE_KEY = 'cart_items'
 
@@ -61,7 +40,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 
       return {
         ...state,
-        items: [...state.items, { product: action.payload, quantity: 1 }],
+        items: [...state.items, { product: action.payload, quantity: businessRules.quantity.min }],
       }
     }
 
@@ -105,19 +84,17 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 function initCartState(initial: CartState): CartState {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved) {
-      const parsed = JSON.parse(saved)
-      if (Array.isArray(parsed)) {
-        return { items: parsed }
-      }
-    }
+    if (!saved) return initial
+
+    const parsed = JSON.parse(saved)
+    if (!Array.isArray(parsed)) return initial
+
+    return { items: parsed }
   } catch (error) {
     console.error('Failed to load cart from localStorage:', error)
+    return initial
   }
-  return initial
 }
-
-const CartContext = createContext<CartContextType | null>(null)
 
 interface CartProviderProps {
   children: ReactNode
@@ -214,13 +191,4 @@ export function CartProvider({ children }: CartProviderProps) {
   )
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
-}
-
-// oxlint-disable-next-line react/only-export-components
-export function useCart(): CartContextType {
-  const context = useContext(CartContext)
-  if (!context) {
-    throw new Error('useCart must be used within a CartProvider')
-  }
-  return context
 }

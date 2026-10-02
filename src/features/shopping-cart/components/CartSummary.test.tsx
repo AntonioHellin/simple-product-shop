@@ -2,6 +2,9 @@ import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { CartSummary } from './CartSummary'
 
+const BULK_DISCOUNT_NAME = 'Bulk Discount'
+const ORDER_DISCOUNT_NAME = 'Order Discount'
+
 describe('CartSummary', () => {
   it('renders formatted subtotal', () => {
     render(
@@ -105,15 +108,15 @@ describe('CartSummary', () => {
         total={95.62}
         itemCount={5}
         discountBreakdown={[
-          { name: 'Bulk Discount', amount: 12.5 },
-          { name: 'Order Discount', amount: 16.88 },
+          { name: BULK_DISCOUNT_NAME, amount: 12.5 },
+          { name: ORDER_DISCOUNT_NAME, amount: 16.88 },
         ]}
       />,
     )
 
-    expect(screen.getByText('Bulk Discount')).toBeInTheDocument()
+    expect(screen.getByText(BULK_DISCOUNT_NAME)).toBeInTheDocument()
     expect(screen.getByText('-$12.50')).toBeInTheDocument()
-    expect(screen.getByText('Order Discount')).toBeInTheDocument()
+    expect(screen.getByText(ORDER_DISCOUNT_NAME)).toBeInTheDocument()
     expect(screen.getByText('-$16.88')).toBeInTheDocument()
   })
 
@@ -124,7 +127,7 @@ describe('CartSummary', () => {
         discount={10.5}
         total={94.5}
         itemCount={5}
-        discountBreakdown={[{ name: 'Bulk Discount', amount: 10.5 }]}
+        discountBreakdown={[{ name: BULK_DISCOUNT_NAME, amount: 10.5 }]}
       />,
     )
 
@@ -140,8 +143,8 @@ describe('CartSummary', () => {
         total={95.62}
         itemCount={5}
         discountBreakdown={[
-          { name: 'Bulk Discount', amount: 12.5 },
-          { name: 'Order Discount', amount: 16.88 },
+          { name: BULK_DISCOUNT_NAME, amount: 12.5 },
+          { name: ORDER_DISCOUNT_NAME, amount: 16.88 },
         ]}
       />,
     )

@@ -2,7 +2,8 @@ import { renderHook, act } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import type { ReactNode } from 'react'
 import type { Product } from '@/shared/types'
-import { CartProvider, useCart } from './CartContext'
+import { CartProvider } from './CartContext'
+import { useCart } from './useCart'
 
 const mockProduct1: Product = {
   id: 1,
@@ -29,7 +30,7 @@ describe('CartContext', () => {
     localStorage.clear()
   })
 
-  it('inicia con carrito vacío (itemCount 0, subtotal 0)', () => {
+  it('starts with empty cart (itemCount 0, subtotal 0)', () => {
     const { result } = renderHook(() => useCart(), { wrapper })
 
     expect(result.current.items).toEqual([])
@@ -40,7 +41,7 @@ describe('CartContext', () => {
     expect(result.current.discountBreakdown).toEqual([])
   })
 
-  it('addItem agrega producto nuevo con quantity 1', () => {
+  it('addItem adds a new product with quantity 1', () => {
     const { result } = renderHook(() => useCart(), { wrapper })
 
     act(() => {
@@ -56,7 +57,7 @@ describe('CartContext', () => {
     expect(result.current.subtotal).toBe(50)
   })
 
-  it('addItem incrementa quantity si el producto ya existe', () => {
+  it('addItem increments quantity if product already exists', () => {
     const { result } = renderHook(() => useCart(), { wrapper })
 
     act(() => {
@@ -72,7 +73,7 @@ describe('CartContext', () => {
     expect(result.current.subtotal).toBe(100)
   })
 
-  it('updateQuantity cambia la cantidad de un item', () => {
+  it('updateQuantity changes the item quantity', () => {
     const { result } = renderHook(() => useCart(), { wrapper })
 
     act(() => {
@@ -87,7 +88,7 @@ describe('CartContext', () => {
     expect(result.current.subtotal).toBe(250)
   })
 
-  it('updateQuantity con 0 elimina el item', () => {
+  it('updateQuantity with 0 removes the item', () => {
     const { result } = renderHook(() => useCart(), { wrapper })
 
     act(() => {
@@ -102,7 +103,7 @@ describe('CartContext', () => {
     expect(result.current.subtotal).toBe(0)
   })
 
-  it('removeItem elimina un item del carrito', () => {
+  it('removeItem removes an item from the cart', () => {
     const { result } = renderHook(() => useCart(), { wrapper })
 
     act(() => {
@@ -119,7 +120,7 @@ describe('CartContext', () => {
     expect(result.current.items[0].product.id).toBe(mockProduct2.id)
   })
 
-  it('clearCart vacía todo el carrito', () => {
+  it('clearCart empties the entire cart', () => {
     const { result } = renderHook(() => useCart(), { wrapper })
 
     act(() => {
@@ -137,7 +138,7 @@ describe('CartContext', () => {
     expect(result.current.subtotal).toBe(0)
   })
 
-  it('itemCount suma todas las cantidades', () => {
+  it('itemCount sums all quantities', () => {
     const { result } = renderHook(() => useCart(), { wrapper })
 
     act(() => {
@@ -149,7 +150,7 @@ describe('CartContext', () => {
     expect(result.current.itemCount).toBe(3)
   })
 
-  it('subtotal calcula correctamente (precio × cantidad de cada item)', () => {
+  it('subtotal calculates correctly (price * quantity for each item)', () => {
     const { result } = renderHook(() => useCart(), { wrapper })
 
     act(() => {
@@ -162,7 +163,7 @@ describe('CartContext', () => {
     expect(result.current.subtotal).toBe(130)
   })
 
-  it('carga datos previos desde localStorage al iniciar con lazy initializer', () => {
+  it('loads previous data from localStorage on initialization with lazy initializer', () => {
     const savedCart = [{ product: mockProduct1, quantity: 3 }]
     localStorage.setItem('cart_items', JSON.stringify(savedCart))
 
@@ -173,7 +174,7 @@ describe('CartContext', () => {
     expect(result.current.subtotal).toBe(150)
   })
 
-  it('persiste los cambios en localStorage al agregar items', () => {
+  it('persists changes to localStorage when adding items', () => {
     const { result } = renderHook(() => useCart(), { wrapper })
 
     act(() => {
@@ -184,7 +185,7 @@ describe('CartContext', () => {
     expect(stored).toEqual([{ product: mockProduct1, quantity: 1 }])
   })
 
-  it('no sobreescribe localStorage en el primer render (isInitialMount)', () => {
+  it('does not overwrite localStorage on first render (isInitialMount)', () => {
     const setItemSpy = vi.spyOn(Storage.prototype, 'setItem')
 
     renderHook(() => useCart(), { wrapper })
@@ -193,7 +194,7 @@ describe('CartContext', () => {
     setItemSpy.mockRestore()
   })
 
-  it('calcula descuentos automáticamente cuando se agregan items', () => {
+  it('calculates discounts automatically when items are added', () => {
     const { result } = renderHook(() => useCart(), { wrapper })
 
     act(() => {
@@ -210,7 +211,7 @@ describe('CartContext', () => {
     ])
   })
 
-  it('recalcula descuentos cuando los items se vacían', () => {
+  it('recalculates discounts when items are cleared', () => {
     const { result } = renderHook(() => useCart(), { wrapper })
 
     act(() => {
@@ -227,5 +228,17 @@ describe('CartContext', () => {
     expect(result.current.discount).toBe(0)
     expect(result.current.total).toBe(0)
     expect(result.current.discountBreakdown).toEqual([])
+  })
+
+  it('throws an error when useCart is used outside CartProvider', () => {
+    expect(() => renderHook(() => useCart())).toThrow(
+      'useCart must be used within a CartProvider'
+    )
+  })
+
+  it('handles errors when reading invalid localStorage', () => {
+    localStorage.setItem('cart_items', 'invalid-json{')
+    const { result } = renderHook(() => useCart(), { wrapper })
+    expect(result.current.items).toEqual([])
   })
 })

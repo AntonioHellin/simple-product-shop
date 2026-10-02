@@ -6,6 +6,10 @@ export default mergeConfig(
   defineConfig({
     test: {
       exclude: ['**/node_modules/**', '**/dist/**', 'e2e/**', '**/e2e/**'],
+      coverage: {
+        clean: false,
+        reporter: ['text'],
+      },
     },
   })
 )

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import type { Product } from '@/shared/types'
 import { formatPrice } from '@/shared/utils'
+import { UI_TEXT } from '@/shared/constants'
 
 export type { Product }
 
@@ -71,7 +72,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
               : 'bg-cyan-700 hover:bg-cyan-800'
           }`}
         >
-          {isAdded ? 'Added!' : 'Add to Cart'}
+          {isAdded ? 'Added!' : UI_TEXT.addToCart}
         </button>
       </div>
     </div>

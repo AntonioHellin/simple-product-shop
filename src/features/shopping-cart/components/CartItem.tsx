@@ -1,5 +1,6 @@
 import type { CartItem as CartItemType } from '@/shared/types'
 import { formatPrice } from '@/shared/utils'
+import { businessRules, UI_TEXT } from '@/shared/constants'
 
 export interface CartItemProps {
   item: CartItemType
@@ -36,7 +37,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
         <button
           type="button"
           onClick={onRemove}
-          aria-label="Remove item"
+          aria-label={UI_TEXT.removeFromCart}
           className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer shrink-0"
         >
           <svg
@@ -65,7 +66,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
           <button
             type="button"
             onClick={() => onUpdateQuantity(quantity - 1)}
-            disabled={quantity <= 1}
+            disabled={quantity <= businessRules.quantity.min}
             aria-label="Decrease quantity"
             className="w-7 h-7 flex items-center justify-center rounded text-slate-600 hover:bg-white hover:text-cyan-800 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-slate-600 transition-all cursor-pointer disabled:cursor-not-allowed"
           >

@@ -1,12 +1,14 @@
 import type { CartItem } from '@/shared/types'
-import { BULK_DISCOUNT } from '@/shared/constants'
+import { businessRules } from '@/shared/constants/businessRules'
 
 export function calculateBulkDiscount(items: CartItem[]): number {
+  if (items.length === 0) return 0
+
   return items.reduce((discount, item) => {
-    if (item.quantity >= BULK_DISCOUNT.MIN_QUANTITY) {
-      const itemSubtotal = item.product.price * item.quantity
-      return discount + itemSubtotal * BULK_DISCOUNT.PERCENTAGE
+    if (item.quantity < businessRules.bulkDiscount.threshold) {
+      return discount
     }
-    return discount
+    const itemSubtotal = item.product.price * item.quantity
+    return discount + itemSubtotal * businessRules.bulkDiscount.percentage
   }, 0)
 }

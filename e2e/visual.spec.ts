@@ -12,11 +12,11 @@ test.describe('Visual Regression Tests', () => {
     await catalogPage.goto()
     await page.evaluate(() => localStorage.clear())
     await page.reload()
-    // Asegurar que el catálogo está cargado antes de tomar screenshots
+    // Ensure catalog is loaded before taking screenshots
     await expect(catalogPage.heading).toBeVisible()
   })
 
-  test('Screenshot de la homepage con catálogo', async ({ page }) => {
+  test('Homepage screenshot with catalog', async ({ page }) => {
     await expect(catalogPage.productCards.first()).toBeVisible()
     await expect(page).toHaveScreenshot('homepage-catalog.png', {
       maxDiffPixelRatio: 0.05,
@@ -24,7 +24,7 @@ test.describe('Visual Regression Tests', () => {
     })
   })
 
-  test('Screenshot del carrito con items', async ({ page }) => {
+  test('Cart screenshot with items', async ({ page }) => {
     const product1 = 'Oceanic Diving Mask & Snorkel'
     const product2 = 'Marine Dry Bag 30L'
 

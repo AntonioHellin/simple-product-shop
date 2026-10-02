@@ -19,20 +19,28 @@ export class DiscountCalculator {
   }
 
   getBreakdown(items: CartItem[], subtotal: number): DiscountBreakdownItem[] {
+    if (items.length === 0 || subtotal <= 0) {
+      return []
+    }
+
     const breakdown: DiscountBreakdownItem[] = []
     let currentSubtotal = subtotal
 
     for (const strategy of this.strategies) {
-      if (strategy.isApplicable(items, currentSubtotal)) {
-        const discountAmount = strategy.calculate(items, currentSubtotal)
-        if (discountAmount > 0) {
-          breakdown.push({
-            name: strategy.name,
-            amount: discountAmount,
-          })
-          currentSubtotal -= discountAmount
-        }
+      if (!strategy.isApplicable(items, currentSubtotal)) {
+        continue
       }
+
+      const discountAmount = strategy.calculate(items, currentSubtotal)
+      if (discountAmount <= 0) {
+        continue
+      }
+
+      breakdown.push({
+        name: strategy.name,
+        amount: discountAmount,
+      })
+      currentSubtotal -= discountAmount
     }
 
     return breakdown

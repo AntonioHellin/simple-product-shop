@@ -20,7 +20,7 @@ describe('ProductCard', () => {
   it('renders product name', () => {
     render(<ProductCard product={mockProduct} onAddToCart={() => {}} />)
 
-    expect(screen.getByText('Test Product')).toBeInTheDocument()
+    expect(screen.getByText(mockProduct.name)).toBeInTheDocument()
   })
 
   it('renders product description', () => {
@@ -40,7 +40,7 @@ describe('ProductCard', () => {
   it('renders product image', () => {
     render(<ProductCard product={mockProduct} onAddToCart={() => {}} />)
 
-    const image = screen.getByRole('img', { name: 'Test Product' })
+    const image = screen.getByRole('img', { name: mockProduct.name })
     expect(image).toHaveAttribute('src', 'https://example.com/image.jpg')
   })
 
@@ -57,7 +57,7 @@ describe('ProductCard', () => {
     expect(handleAddToCart).toHaveBeenCalledWith(mockProduct)
   })
 
-  it('muestra "Added!" al hacer click y vuelve a "Add to Cart" tras 1.5s', () => {
+  it('shows "Added!" on click and reverts to "Add to Cart" after 1.5s', () => {
     vi.useFakeTimers()
     const handleAddToCart = vi.fn()
 
@@ -76,7 +76,7 @@ describe('ProductCard', () => {
     expect(screen.getByRole('button', { name: /add to cart/i })).toBeInTheDocument()
   })
 
-  it('sigue funcionando durante la transición de estado "added"', () => {
+  it('continues to function during the "added" state transition', () => {
     vi.useFakeTimers()
     const handleAddToCart = vi.fn()
 

@@ -12,14 +12,14 @@ export class ProductCatalogPage {
   }
 
   /**
-   * Navega a la página principal de la tienda
+   * Navigates to the store's main catalog page
    */
   async goto(): Promise<void> {
     await this.page.goto('/')
   }
 
   /**
-   * Obtiene el Locator de la card de un producto específico por su nombre
+   * Retrieves the locator for a specific product card by name
    */
   getProduct(name: string): Locator {
     return this.productCards.filter({
@@ -28,7 +28,7 @@ export class ProductCatalogPage {
   }
 
   /**
-   * Agrega un producto al carrito pulsando el botón "Add to Cart" de su card
+   * Adds a product to the cart by clicking its "Add to Cart" button
    */
   async addToCart(name: string): Promise<void> {
     const productCard = this.getProduct(name)

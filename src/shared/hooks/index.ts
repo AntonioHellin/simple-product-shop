@@ -1,2 +1,2 @@
 // Shared hooks
-export {}
+export * from './useCurrency'

@@ -4,6 +4,10 @@ import { BULK_DISCOUNT } from '@/shared/constants'
 import { calculateBulkDiscount } from './calculateBulkDiscount'
 
 describe('calculateBulkDiscount', () => {
+  it('returns 0 when items array is empty', () => {
+    expect(calculateBulkDiscount([])).toBe(0)
+  })
+
   it('returns 0 when items have less than 5 units', () => {
     const items: CartItem[] = [
       {

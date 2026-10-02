@@ -1,20 +1,19 @@
 import type { CartItem } from '@/shared/types'
-import {
-  ORDER_DISCOUNT_THRESHOLD,
-  ORDER_DISCOUNT_RATE,
-  ORDER_DISCOUNT,
-} from '@/shared/constants/businessRules'
+import { businessRules } from '@/shared/constants/businessRules'
 import type { DiscountStrategy } from './DiscountStrategy'
 
 export class OrderDiscountStrategy implements DiscountStrategy {
   readonly name = 'Order Discount'
-  readonly description = ORDER_DISCOUNT.LABEL
+  readonly description = businessRules.orderDiscount.label
 
   isApplicable(_items: CartItem[], subtotal: number): boolean {
-    return subtotal >= ORDER_DISCOUNT_THRESHOLD
+    return subtotal >= businessRules.orderDiscount.threshold
   }
 
   calculate(_items: CartItem[], subtotal: number): number {
-    return subtotal * ORDER_DISCOUNT_RATE
+    if (subtotal < businessRules.orderDiscount.threshold) {
+      return 0
+    }
+    return subtotal * businessRules.orderDiscount.percentage
   }
 }

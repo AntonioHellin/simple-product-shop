@@ -1,4 +1,5 @@
-import { useCart } from '@/context/CartContext'
+import { useCart } from '@/context/useCart'
+import { UI_TEXT } from '@/shared/constants'
 import { CartItem, CartSummary } from './components'
 
 export function ShoppingCart() {
@@ -46,7 +47,7 @@ export function ShoppingCart() {
             </svg>
           </div>
           <p data-testid="empty-cart-message" className="text-lg font-semibold text-slate-700">
-            Your cart is empty
+            {UI_TEXT.emptyCart}
           </p>
           <p className="text-sm text-slate-400 mt-1">
             Browse our catalog to add items to your cart.

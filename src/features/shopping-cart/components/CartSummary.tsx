@@ -1,5 +1,6 @@
 import { formatPrice } from '@/shared/utils'
 import type { DiscountBreakdownItem } from '@/shared/strategies'
+import { businessRules, UI_TEXT } from '@/shared/constants'
 
 export interface CartSummaryProps {
   subtotal: number
@@ -10,6 +11,34 @@ export interface CartSummaryProps {
   onCheckout?: () => void
 }
 
+function renderDiscountRows(
+  discountBreakdown: DiscountBreakdownItem[],
+  discount: number
+) {
+  if (discountBreakdown.length > 0) {
+    return discountBreakdown.map((item) => (
+      <div
+        key={item.name}
+        className="flex justify-between items-center text-emerald-700"
+      >
+        <span>{item.name}</span>
+        <span className="font-semibold">-{formatPrice(item.amount)}</span>
+      </div>
+    ))
+  }
+
+  if (discount > 0) {
+    return (
+      <div className="flex justify-between items-center text-emerald-700">
+        <span>Discount</span>
+        <span className="font-semibold">-{formatPrice(discount)}</span>
+      </div>
+    )
+  }
+
+  return null
+}
+
 export function CartSummary({
   subtotal,
   discount,
@@ -18,15 +47,16 @@ export function CartSummary({
   discountBreakdown = [],
   onCheckout,
 }: CartSummaryProps) {
-  const PROMO_THRESHOLD = 100
+  const promoThreshold = businessRules.orderDiscount.threshold
   const bulkDiscount =
     discountBreakdown.find((d) => d.name.toLowerCase().includes('bulk'))?.amount ?? 0
   const effectiveSubtotal = subtotal - bulkDiscount
-  const remainingForPromo = PROMO_THRESHOLD - effectiveSubtotal
+  const remainingForPromo = promoThreshold - effectiveSubtotal
   const hasOrderDiscount = discountBreakdown.some((d) =>
     d.name.toLowerCase().includes('order')
   )
   const showPromo = !hasOrderDiscount && remainingForPromo > 0
+  const promoPercentage = Math.round(businessRules.orderDiscount.percentage * 100)
 
   return (
     <div className="rounded-2xl border border-sky-100/90 bg-slate-50/80 p-6 shadow-xs flex flex-col justify-between">
@@ -45,26 +75,7 @@ export function CartSummary({
           </div>
 
           {/* Separate discount lines if breakdown provided, else fallback to single discount */}
-          {discountBreakdown.length > 0 ? (
-            discountBreakdown.map((item) => (
-              <div
-                key={item.name}
-                className="flex justify-between items-center text-emerald-700"
-              >
-                <span>{item.name}</span>
-                <span className="font-semibold">
-                  -{formatPrice(item.amount)}
-                </span>
-              </div>
-            ))
-          ) : discount > 0 ? (
-            <div className="flex justify-between items-center text-emerald-700">
-              <span>Discount</span>
-              <span className="font-semibold">
-                -{formatPrice(discount)}
-              </span>
-            </div>
-          ) : null}
+          {renderDiscountRows(discountBreakdown, discount)}
 
           <div className="pt-3 border-t border-sky-100/80 flex justify-between items-center">
             <span className="text-base font-semibold text-slate-900">Total</span>
@@ -77,7 +88,7 @@ export function CartSummary({
         {/* Promotional message */}
         {showPromo && (
           <div className="mt-5 rounded-xl border border-cyan-200/80 bg-cyan-50/70 p-3 text-xs font-medium text-cyan-900 text-center">
-            Add {formatPrice(remainingForPromo)} more for 15% off!
+            Add {formatPrice(remainingForPromo)} more for {promoPercentage}% off!
           </div>
         )}
       </div>
@@ -87,7 +98,7 @@ export function CartSummary({
         onClick={onCheckout}
         className="mt-6 w-full rounded-xl bg-cyan-700 py-3 px-4 text-sm font-semibold text-white shadow-sm hover:bg-cyan-800 active:scale-95 transition-all cursor-pointer"
       >
-        Checkout
+        {UI_TEXT.checkout}
       </button>
     </div>
   )

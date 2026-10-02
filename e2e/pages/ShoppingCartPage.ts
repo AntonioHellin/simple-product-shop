@@ -20,7 +20,7 @@ export class ShoppingCartPage {
   }
 
   /**
-   * Obtiene el Locator de un ítem específico del carrito por el nombre del producto
+   * Retrieves the locator for a specific cart item by product name
    */
   getItem(name: string): Locator {
     return this.cartItems.filter({
@@ -29,7 +29,7 @@ export class ShoppingCartPage {
   }
 
   /**
-   * Incrementa la cantidad de un ítem pulsando el botón "+"
+   * Increases the quantity of an item by clicking the "+" button
    */
   async increaseQuantity(name: string): Promise<void> {
     const item = this.getItem(name)
@@ -37,7 +37,7 @@ export class ShoppingCartPage {
   }
 
   /**
-   * Decrementa la cantidad de un ítem pulsando el botón "-"
+   * Decreases the quantity of an item by clicking the "-" button
    */
   async decreaseQuantity(name: string): Promise<void> {
     const item = this.getItem(name)
@@ -45,15 +45,15 @@ export class ShoppingCartPage {
   }
 
   /**
-   * Elimina un ítem del carrito pulsando el botón de papelera
+   * Removes an item from the cart by clicking the trash button
    */
   async removeItem(name: string): Promise<void> {
     const item = this.getItem(name)
-    await item.getByRole('button', { name: /remove item/i }).click()
+    await item.getByRole('button', { name: /remove/i }).click()
   }
 
   /**
-   * Obtiene la cantidad actual numérica de un ítem en el carrito
+   * Retrieves the current numeric quantity of an item in the cart
    */
   async getQuantity(name: string): Promise<number> {
     const item = this.getItem(name)

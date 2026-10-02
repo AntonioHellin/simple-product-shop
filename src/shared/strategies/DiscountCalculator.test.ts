@@ -33,12 +33,12 @@ describe('DiscountCalculator', () => {
     calculator = new DiscountCalculator()
   })
 
-  it('retorna 0 para carrito vacío', () => {
+  it('returns 0 for empty cart', () => {
     expect(calculator.calculate([], 0)).toBe(0)
     expect(calculator.getBreakdown([], 0)).toEqual([])
   })
 
-  it('aplica solo bulk cuando corresponde (subtotal < $100)', () => {
+  it('applies only bulk discount when applicable (subtotal < $100)', () => {
     // 5 units @ $10 = $50. Bulk discount (10%): $5. Remaining: $45 (< $100, no order discount).
     const items: CartItem[] = [{ product: mockProduct10, quantity: 5 }]
     const subtotal = 50
@@ -46,7 +46,7 @@ describe('DiscountCalculator', () => {
     expect(calculator.calculate(items, subtotal)).toBe(5)
   })
 
-  it('aplica solo order cuando corresponde (items con qty < 5)', () => {
+  it('applies only order discount when applicable (items with qty < 5)', () => {
     // 2 units @ $60 = $120. No bulk discount. Order discount (15% of $120): $18.
     const items: CartItem[] = [{ product: mockProduct60, quantity: 2 }]
     const subtotal = 120
@@ -54,7 +54,7 @@ describe('DiscountCalculator', () => {
     expect(calculator.calculate(items, subtotal)).toBe(18)
   })
 
-  it('aplica ambos secuencialmente cuando ambos aplican', () => {
+  it('applies both sequentially when both apply', () => {
     // 5 units @ $25 = $125.
     // 1. Bulk discount (10% of $125): $12.50 -> remaining: $112.50
     // 2. Order discount (15% of $112.50): $16.875 -> total discount: $29.375
@@ -64,7 +64,7 @@ describe('DiscountCalculator', () => {
     expect(calculator.calculate(items, subtotal)).toBe(29.375)
   })
 
-  it('getBreakdown retorna array con nombre y monto de cada descuento', () => {
+  it('getBreakdown returns array with name and amount of each discount', () => {
     const items: CartItem[] = [{ product: mockProduct25, quantity: 5 }]
     const subtotal = 125
 
@@ -74,5 +74,17 @@ describe('DiscountCalculator', () => {
       { name: 'Bulk Discount', amount: 12.5 },
       { name: 'Order Discount', amount: 16.875 },
     ])
+  })
+
+  it('omits strategies that calculate 0 discount', () => {
+    const zeroStrategy = {
+      name: 'Zero Strategy',
+      description: 'Calculates 0',
+      isApplicable: () => true,
+      calculate: () => 0,
+    }
+    const customCalc = new DiscountCalculator([zeroStrategy])
+    const items: CartItem[] = [{ product: mockProduct25, quantity: 1 }]
+    expect(customCalc.getBreakdown(items, 25)).toEqual([])
   })
 })

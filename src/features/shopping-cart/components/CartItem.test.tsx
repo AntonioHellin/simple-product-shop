@@ -125,7 +125,7 @@ describe('CartItem', () => {
       />,
     )
 
-    const removeBtn = screen.getByRole('button', { name: /remove item/i })
+    const removeBtn = screen.getByRole('button', { name: /remove/i })
     await user.click(removeBtn)
 
     expect(handleRemove).toHaveBeenCalledTimes(1)
