@@ -1,7 +1,16 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
+import * as Sentry from '@sentry/react'
 import { LoginDemo } from './LoginDemo'
+
+vi.mock('@sentry/react', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@sentry/react')>()
+  return {
+    ...actual,
+    setUser: vi.fn(),
+  }
+})
 
 describe('LoginDemo', () => {
   const validPassword = 'ValidPassword123!'
@@ -118,6 +127,29 @@ describe('LoginDemo', () => {
 
     expect(screen.getByText(/please enter a valid email address/i)).toBeInTheDocument()
     expect(emailInput).toHaveAttribute('aria-invalid', 'true')
+  })
+
+  it('sets Sentry user context on login and clears it on logout', async () => {
+    const user = userEvent.setup()
+    render(<LoginDemo />)
+
+    const emailInput = screen.getByLabelText(/email/i)
+    const passwordInput = screen.getByLabelText('Password')
+    const submitBtn = screen.getByRole('button', { name: /login|submit|sign in/i })
+
+    await user.type(emailInput, demoEmail)
+    await user.type(passwordInput, validPassword)
+    await user.click(submitBtn)
+
+    expect(Sentry.setUser).toHaveBeenCalledWith({
+      email: demoEmail,
+      id: 'demo-user-123',
+    })
+
+    const logoutBtn = screen.getByRole('button', { name: /log out/i })
+    await user.click(logoutBtn)
+
+    expect(Sentry.setUser).toHaveBeenCalledWith(null)
   })
 })
 

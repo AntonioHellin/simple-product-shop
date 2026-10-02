@@ -6,6 +6,7 @@ import {
   useCallback,
   type ReactNode,
 } from 'react'
+import * as Sentry from '@sentry/react'
 import type { Product } from '@/shared/types'
 import { calculateSubtotal } from '@/shared/utils'
 import { DiscountCalculator } from '@/shared/strategies'
@@ -124,10 +125,21 @@ export function CartProvider({ children }: CartProviderProps) {
 
   const addItem = useCallback((product: Product) => {
     dispatch({ type: 'ADD_ITEM', payload: product })
+    Sentry.addBreadcrumb({
+      category: 'cart',
+      message: `Added ${product.name} to cart`,
+      level: 'info',
+      data: { productId: product.id, productName: product.name },
+    })
   }, [])
 
   const removeItem = useCallback((productId: number) => {
     dispatch({ type: 'REMOVE_ITEM', payload: productId })
+    Sentry.addBreadcrumb({
+      category: 'cart',
+      message: `Removed item ${productId} from cart`,
+      level: 'info',
+    })
   }, [])
 
   const updateQuantity = useCallback((productId: number, quantity: number) => {
@@ -136,6 +148,11 @@ export function CartProvider({ children }: CartProviderProps) {
 
   const clearCart = useCallback(() => {
     dispatch({ type: 'CLEAR_CART' })
+    Sentry.addBreadcrumb({
+      category: 'cart',
+      message: 'Cleared cart',
+      level: 'info',
+    })
   }, [])
 
   const itemCount = useMemo(

@@ -18,6 +18,7 @@
     "quality": "pnpm lint && pnpm typecheck && pnpm test"
   },
   "dependencies": {
+    "@sentry/react": "^11.3.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

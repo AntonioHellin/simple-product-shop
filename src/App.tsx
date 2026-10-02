@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { CartProvider } from '@/context/CartContext'
 import { useCart } from '@/context/useCart'
 import { ProductCatalog } from '@/features/product-catalog'
 import { ShoppingCart } from '@/features/shopping-cart'
@@ -43,6 +42,18 @@ function ShopApp() {
           </div>
 
           <div className="flex items-center gap-3">
+            {import.meta.env.DEV && (
+              <button
+                type="button"
+                onClick={() => {
+                  throw new Error('Test error from React')
+                }}
+                className="bg-red-500 hover:bg-red-600 text-white px-2.5 py-1 text-xs font-semibold rounded-md shadow-xs transition-colors"
+              >
+                Test Error
+              </button>
+            )}
+
             {/* Auth Demo Toggle Button */}
             <button
               type="button"
@@ -150,11 +161,7 @@ function ShopApp() {
 }
 
 function App() {
-  return (
-    <CartProvider>
-      <ShopApp />
-    </CartProvider>
-  )
+  return <ShopApp />
 }
 
 export default App

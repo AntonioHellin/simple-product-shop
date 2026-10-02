@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
+import * as Sentry from '@sentry/react'
 import { validatePassword } from '@/shared/utils'
 import { PasswordInput } from './components/PasswordInput'
 
@@ -22,6 +23,14 @@ export function LoginDemo() {
   const isFormValid = isEmailValid && isPasswordValid && !isLocked
   const showEmailError = emailTouched && !isEmailValid && email.length > 0
 
+  const handleLogout = () => {
+    setState('idle')
+    setEmail('')
+    setPassword('')
+    setEmailTouched(false)
+    Sentry.setUser(null)
+  }
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -32,6 +41,10 @@ export function LoginDemo() {
 
     if (email === DEMO_EMAIL) {
       setState('success')
+      Sentry.setUser({
+        email: email,
+        id: 'demo-user-123',
+      })
       return
     }
 
@@ -59,9 +72,16 @@ export function LoginDemo() {
       {state === 'success' && (
         <div
           role="alert"
-          className="mb-5 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-sm font-medium"
+          className="mb-5 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-sm font-medium flex items-center justify-between"
         >
-          Welcome back! Login successful.
+          <span>Welcome back! Login successful.</span>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="text-xs text-emerald-700 dark:text-emerald-300 underline hover:text-emerald-900"
+          >
+            Log out
+          </button>
         </div>
       )}
 
