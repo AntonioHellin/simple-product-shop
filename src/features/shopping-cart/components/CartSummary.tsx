@@ -1,10 +1,12 @@
 import { formatPrice } from '@/shared/utils'
+import type { DiscountBreakdownItem } from '@/shared/strategies'
 
 export interface CartSummaryProps {
   subtotal: number
   discount: number
   total: number
   itemCount: number
+  discountBreakdown?: DiscountBreakdownItem[]
   onCheckout?: () => void
 }
 
@@ -13,11 +15,18 @@ export function CartSummary({
   discount,
   total,
   itemCount,
+  discountBreakdown = [],
   onCheckout,
 }: CartSummaryProps) {
   const PROMO_THRESHOLD = 100
-  const remainingForPromo = PROMO_THRESHOLD - subtotal
-  const showPromo = subtotal < PROMO_THRESHOLD
+  const bulkDiscount =
+    discountBreakdown.find((d) => d.name.toLowerCase().includes('bulk'))?.amount ?? 0
+  const effectiveSubtotal = subtotal - bulkDiscount
+  const remainingForPromo = PROMO_THRESHOLD - effectiveSubtotal
+  const hasOrderDiscount = discountBreakdown.some((d) =>
+    d.name.toLowerCase().includes('order')
+  )
+  const showPromo = !hasOrderDiscount && remainingForPromo > 0
 
   return (
     <div className="rounded-2xl border border-sky-100/90 bg-slate-50/80 p-6 shadow-xs flex flex-col justify-between">
@@ -35,14 +44,27 @@ export function CartSummary({
             </span>
           </div>
 
-          {discount > 0 && (
+          {/* Separate discount lines if breakdown provided, else fallback to single discount */}
+          {discountBreakdown.length > 0 ? (
+            discountBreakdown.map((item) => (
+              <div
+                key={item.name}
+                className="flex justify-between items-center text-emerald-700"
+              >
+                <span>{item.name}</span>
+                <span className="font-semibold">
+                  -{formatPrice(item.amount)}
+                </span>
+              </div>
+            ))
+          ) : discount > 0 ? (
             <div className="flex justify-between items-center text-emerald-700">
               <span>Discount</span>
               <span className="font-semibold">
                 -{formatPrice(discount)}
               </span>
             </div>
-          )}
+          ) : null}
 
           <div className="pt-3 border-t border-sky-100/80 flex justify-between items-center">
             <span className="text-base font-semibold text-slate-900">Total</span>

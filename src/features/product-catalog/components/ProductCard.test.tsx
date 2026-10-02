@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, act, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import type { Product } from '@/shared/types'
 import { ProductCard } from './ProductCard'
 
@@ -13,6 +13,10 @@ const mockProduct: Product = {
 }
 
 describe('ProductCard', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   it('renders product name', () => {
     render(<ProductCard product={mockProduct} onAddToCart={() => {}} />)
 
@@ -51,5 +55,45 @@ describe('ProductCard', () => {
 
     expect(handleAddToCart).toHaveBeenCalledTimes(1)
     expect(handleAddToCart).toHaveBeenCalledWith(mockProduct)
+  })
+
+  it('muestra "Added!" al hacer click y vuelve a "Add to Cart" tras 1.5s', () => {
+    vi.useFakeTimers()
+    const handleAddToCart = vi.fn()
+
+    render(<ProductCard product={mockProduct} onAddToCart={handleAddToCart} />)
+
+    const button = screen.getByRole('button', { name: /add to cart/i })
+    fireEvent.click(button)
+
+    expect(screen.getByRole('button', { name: /added!/i })).toBeInTheDocument()
+    expect(handleAddToCart).toHaveBeenCalledWith(mockProduct)
+
+    act(() => {
+      vi.advanceTimersByTime(1500)
+    })
+
+    expect(screen.getByRole('button', { name: /add to cart/i })).toBeInTheDocument()
+  })
+
+  it('sigue funcionando durante la transición de estado "added"', () => {
+    vi.useFakeTimers()
+    const handleAddToCart = vi.fn()
+
+    render(<ProductCard product={mockProduct} onAddToCart={handleAddToCart} />)
+
+    const button = screen.getByRole('button', { name: /add to cart/i })
+    fireEvent.click(button)
+    expect(handleAddToCart).toHaveBeenCalledTimes(1)
+
+    const addedButton = screen.getByRole('button', { name: /added!/i })
+    fireEvent.click(addedButton)
+    expect(handleAddToCart).toHaveBeenCalledTimes(2)
+
+    act(() => {
+      vi.advanceTimersByTime(1500)
+    })
+
+    expect(screen.getByRole('button', { name: /add to cart/i })).toBeInTheDocument()
   })
 })

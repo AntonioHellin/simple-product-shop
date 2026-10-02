@@ -10,6 +10,9 @@ import {
 } from 'react'
 import type { CartItem, Product } from '@/shared/types'
 import { calculateSubtotal } from '@/shared/utils'
+import { DiscountCalculator, type DiscountBreakdownItem } from '@/shared/strategies'
+
+export type { DiscountBreakdownItem }
 
 export type CartAction =
   | { type: 'ADD_ITEM'; payload: Product }
@@ -25,6 +28,9 @@ export interface CartContextType {
   items: CartItem[]
   itemCount: number
   subtotal: number
+  discount: number
+  total: number
+  discountBreakdown: DiscountBreakdownItem[]
   addItem: (product: Product) => void
   removeItem: (productId: number) => void
   updateQuantity: (productId: number, quantity: number) => void
@@ -124,6 +130,7 @@ export function CartProvider({ children }: CartProviderProps) {
     initCartState
   )
   const isInitialMount = useRef(true)
+  const discountCalculator = useMemo(() => new DiscountCalculator(), [])
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -164,17 +171,46 @@ export function CartProvider({ children }: CartProviderProps) {
     [state.items]
   )
 
+  const discountBreakdown = useMemo(
+    () => discountCalculator.getBreakdown(state.items, subtotal),
+    [discountCalculator, state.items, subtotal]
+  )
+
+  const discount = useMemo(
+    () => discountBreakdown.reduce((acc, item) => acc + item.amount, 0),
+    [discountBreakdown]
+  )
+
+  const total = useMemo(
+    () => Math.max(0, subtotal - discount),
+    [subtotal, discount]
+  )
+
   const value = useMemo(
     () => ({
       items: state.items,
       itemCount,
       subtotal,
+      discount,
+      total,
+      discountBreakdown,
       addItem,
       removeItem,
       updateQuantity,
       clearCart,
     }),
-    [state.items, itemCount, subtotal, addItem, removeItem, updateQuantity, clearCart]
+    [
+      state.items,
+      itemCount,
+      subtotal,
+      discount,
+      total,
+      discountBreakdown,
+      addItem,
+      removeItem,
+      updateQuantity,
+      clearCart,
+    ]
   )
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

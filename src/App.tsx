@@ -1,37 +1,13 @@
+import { CartProvider, useCart } from '@/context/CartContext'
 import { ProductCatalog } from '@/features/product-catalog'
-import { CartItem, CartSummary } from '@/features/shopping-cart'
-import type { CartItem as CartItemType, Product } from '@/shared/types'
+import { ShoppingCart } from '@/features/shopping-cart'
 
-const sampleCartItem: CartItemType = {
-  product: {
-    id: 1,
-    name: 'Oceanic Diving Mask & Snorkel',
-    price: 49.99,
-    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&auto=format&fit=crop&q=80',
-    description: 'Máscara panorámica de silicona hipoalergénica con lente de cristal templado y tubo seco.',
-  },
-  quantity: 2,
-}
-
-function App() {
-  const handleAddToCart = (product: Product) => {
-    console.log('Product added to cart:', product)
-  }
-
-  const handleUpdateQuantity = (quantity: number) => {
-    console.log('Update quantity to:', quantity)
-  }
-
-  const handleRemoveItem = () => {
-    console.log('Remove item from cart')
-  }
-
-  const handleCheckout = () => {
-    console.log('Proceeding to checkout')
-  }
+function ShopApp() {
+  const { addItem, itemCount } = useCart()
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-50/40 via-slate-50 to-cyan-50/20 text-slate-800">
+    <div className="min-h-screen bg-gradient-to-b from-sky-50/40 via-slate-50 to-cyan-50/20 text-slate-800 flex flex-col">
+      {/* Header */}
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-sky-100/80 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -62,59 +38,60 @@ function App() {
             </div>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-500 bg-sky-50/80 px-3 py-1.5 rounded-full border border-sky-100">
-            <span className="inline-block w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
-            Nautical Gear 2026 Collection
+          {/* Cart Icon with Item Count Badge */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-50 border border-sky-100 text-slate-700">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5 text-cyan-700"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                />
+              </svg>
+              <span className="text-xs font-bold text-cyan-900 bg-cyan-100 px-2 py-0.5 rounded-full">
+                {itemCount}
+              </span>
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
-        <ProductCatalog onAddToCart={handleAddToCart} />
-
-        {/* Temporary Preview Section */}
-        <section className="pt-8 border-t border-sky-100">
-          <div className="mb-6">
-            <span className="text-xs font-semibold uppercase tracking-wider text-cyan-700">
-              Visual Preview (Temporary)
-            </span>
-            <h2 className="text-2xl font-bold text-slate-900 mt-1">
-              Shopping Cart Components Preview
-            </h2>
+      {/* Main Content Layout */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          {/* Left Column (Wider): Product Catalog */}
+          <div className="lg:col-span-2">
+            <ProductCatalog onAddToCart={addItem} />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            <div className="lg:col-span-2 space-y-4">
-              <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">
-                Cart Items
-              </h3>
-              <CartItem
-                item={sampleCartItem}
-                onUpdateQuantity={handleUpdateQuantity}
-                onRemove={handleRemoveItem}
-              />
-            </div>
-
-            <div>
-              <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-4">
-                Summary
-              </h3>
-              <CartSummary
-                subtotal={99.98}
-                discount={10.0}
-                total={89.98}
-                itemCount={2}
-                onCheckout={handleCheckout}
-              />
-            </div>
+          {/* Right Column: Sticky Shopping Cart */}
+          <div className="lg:col-span-1 lg:sticky lg:top-24">
+            <ShoppingCart />
           </div>
-        </section>
+        </div>
       </main>
 
+      {/* Footer */}
       <footer className="mt-16 border-t border-sky-100/80 bg-white/40 py-8 text-center text-xs text-slate-400">
         <p>Simple Product Shop &bull; Ocean Edition &bull; Minimalist Maritime Goods</p>
       </footer>
     </div>
+  )
+}
+
+function App() {
+  return (
+    <CartProvider>
+      <ShopApp />
+    </CartProvider>
   )
 }
 

@@ -35,6 +35,9 @@ describe('CartContext', () => {
     expect(result.current.items).toEqual([])
     expect(result.current.itemCount).toBe(0)
     expect(result.current.subtotal).toBe(0)
+    expect(result.current.discount).toBe(0)
+    expect(result.current.total).toBe(0)
+    expect(result.current.discountBreakdown).toEqual([])
   })
 
   it('addItem agrega producto nuevo con quantity 1', () => {
@@ -188,5 +191,41 @@ describe('CartContext', () => {
 
     expect(setItemSpy).not.toHaveBeenCalled()
     setItemSpy.mockRestore()
+  })
+
+  it('calcula descuentos automáticamente cuando se agregan items', () => {
+    const { result } = renderHook(() => useCart(), { wrapper })
+
+    act(() => {
+      result.current.addItem(mockProduct1)
+      result.current.updateQuantity(mockProduct1.id, 5)
+    })
+
+    expect(result.current.subtotal).toBe(250)
+    expect(result.current.discount).toBe(58.75)
+    expect(result.current.total).toBe(191.25)
+    expect(result.current.discountBreakdown).toEqual([
+      { name: 'Bulk Discount', amount: 25 },
+      { name: 'Order Discount', amount: 33.75 },
+    ])
+  })
+
+  it('recalcula descuentos cuando los items se vacían', () => {
+    const { result } = renderHook(() => useCart(), { wrapper })
+
+    act(() => {
+      result.current.addItem(mockProduct1)
+      result.current.updateQuantity(mockProduct1.id, 5)
+    })
+    expect(result.current.discount).toBe(58.75)
+
+    act(() => {
+      result.current.clearCart()
+    })
+
+    expect(result.current.subtotal).toBe(0)
+    expect(result.current.discount).toBe(0)
+    expect(result.current.total).toBe(0)
+    expect(result.current.discountBreakdown).toEqual([])
   })
 })
