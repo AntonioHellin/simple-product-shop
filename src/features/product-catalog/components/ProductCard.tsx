@@ -37,7 +37,10 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const isAdded = buttonState === 'added'
 
   return (
-    <div className="group rounded-2xl border border-sky-100/80 bg-white p-5 shadow-sm hover:shadow-xl hover:shadow-cyan-900/5 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+    <div
+      data-testid="product-card"
+      className="group rounded-2xl border border-sky-100/80 bg-white p-5 shadow-sm hover:shadow-xl hover:shadow-cyan-900/5 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
+    >
       <div>
         <div className="relative overflow-hidden rounded-xl bg-sky-50/50 aspect-4/3">
           <img

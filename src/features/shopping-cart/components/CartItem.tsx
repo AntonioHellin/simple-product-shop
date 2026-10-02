@@ -12,7 +12,10 @@ export function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
   const subtotal = product.price * quantity
 
   return (
-    <div className="p-3.5 sm:p-4 rounded-xl bg-white border border-sky-100/90 shadow-xs hover:border-sky-200 transition-all flex flex-col gap-3">
+    <div
+      data-testid="cart-item"
+      className="p-3.5 sm:p-4 rounded-xl bg-white border border-sky-100/90 shadow-xs hover:border-sky-200 transition-all flex flex-col gap-3"
+    >
       {/* Top row: Thumbnail + Product Name & Unit Price + Delete Button */}
       <div className="flex items-start gap-3">
         <img
@@ -68,7 +71,10 @@ export function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
           >
             -
           </button>
-          <span className="w-8 text-center text-xs sm:text-sm font-semibold text-slate-800">
+          <span
+            data-testid="cart-item-quantity"
+            className="w-8 text-center text-xs sm:text-sm font-semibold text-slate-800"
+          >
             {quantity}
           </span>
           <button

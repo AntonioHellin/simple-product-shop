@@ -39,7 +39,7 @@ export function CartSummary({
         <div className="space-y-3 text-sm">
           <div className="flex justify-between items-center text-slate-600">
             <span>Subtotal</span>
-            <span className="font-medium text-slate-900">
+            <span data-testid="cart-subtotal" className="font-medium text-slate-900">
               {formatPrice(subtotal)}
             </span>
           </div>
@@ -68,7 +68,7 @@ export function CartSummary({
 
           <div className="pt-3 border-t border-sky-100/80 flex justify-between items-center">
             <span className="text-base font-semibold text-slate-900">Total</span>
-            <span className="text-xl font-extrabold text-slate-900 tracking-tight">
+            <span data-testid="cart-total" className="text-xl font-extrabold text-slate-900 tracking-tight">
               {formatPrice(total)}
             </span>
           </div>

@@ -45,7 +45,9 @@ export function ShoppingCart() {
               />
             </svg>
           </div>
-          <p className="text-lg font-semibold text-slate-700">Your cart is empty</p>
+          <p data-testid="empty-cart-message" className="text-lg font-semibold text-slate-700">
+            Your cart is empty
+          </p>
           <p className="text-sm text-slate-400 mt-1">
             Browse our catalog to add items to your cart.
           </p>
