@@ -19,6 +19,11 @@ const BUTTON_STYLES: Record<ButtonState, string> = {
   error: 'bg-rose-600 hover:bg-rose-700 text-white cursor-pointer active:scale-95',
 }
 
+/**
+ * Interactive product card with dynamic feedback states (idle, loading, success, error).
+ * @prompt Implement responsive ProductCard with visual button transitions and accessible a11y labels.
+ * @see docs/PROMPT_JOURNEY.md#23-product-card-with-dynamic-feedback
+ */
 export function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const [buttonState, setButtonState] = useState<ButtonState>('idle')
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)

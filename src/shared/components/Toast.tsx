@@ -21,6 +21,11 @@ const VARIANT_STYLES: Record<ToastVariant, string> = {
 
 const DEFAULT_DURATION = 3000
 
+/**
+ * Transient alert notification component.
+ * @prompt Create a Toast notification component supporting variants, dismiss timer, and a11y live regions.
+ * @see docs/PROMPT_JOURNEY.md#22-toast-notification-system
+ */
 export function Toast({
   message,
   variant = 'info',

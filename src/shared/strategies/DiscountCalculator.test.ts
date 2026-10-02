@@ -2,6 +2,13 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import type { CartItem, Product } from '@/shared/types'
 import { DiscountCalculator } from './DiscountCalculator'
 
+/**
+ * @prompt Implement discount engine using Strategy Pattern with BulkDiscountStrategy and OrderDiscountStrategy.
+ * @tdd RED: Write unit tests verifying single and sequential strategy execution and breakdown output.
+ *      GREEN: Implement DiscountCalculator orchestrator applying valid strategies in sequence.
+ *      REFACTOR: Support arbitrary strategy injections and 0-discount omission.
+ * @see docs/PROMPT_JOURNEY.md#24-discount-strategy-engine-oop-pattern
+ */
 describe('DiscountCalculator', () => {
   let calculator: DiscountCalculator
 

@@ -11,6 +11,11 @@ function getCartAnnouncement(itemCount: number, formattedTotal: string, isEmpty:
   return `Shopping cart updated: ${itemCount} ${itemWord}, total is ${formattedTotal}`
 }
 
+/**
+ * Accessible shopping cart drawer with live region screen reader announcements.
+ * @prompt Implement shopping cart with dynamic aria-live announcements and accessible controls.
+ * @see docs/PROMPT_JOURNEY.md#31-screen-reader-announcements-aria-live
+ */
 export function ShoppingCart() {
   const {
     items,

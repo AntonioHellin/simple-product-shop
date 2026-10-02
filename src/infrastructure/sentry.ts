@@ -1,5 +1,10 @@
 import * as Sentry from '@sentry/react'
 
+/**
+ * Initializes Sentry React SDK for production error tracking and performance profiling.
+ * @prompt Initialize Sentry for React with graceful DSN handling and tracingSampleRate.
+ * @see docs/PROMPT_JOURNEY.md#41-sentry-sdk-setup--environment-configuration
+ */
 export function initSentry() {
   const dsn = import.meta.env.VITE_SENTRY_DSN
 

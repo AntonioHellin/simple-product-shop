@@ -12,6 +12,14 @@ vi.mock('@sentry/react', async (importOriginal) => {
   }
 })
 
+/**
+ * @prompt Enhance LoginDemo with onBlur email validation, accessible alert errors,
+ *         demo credentials display, and Sentry user context telemetry.
+ * @tdd RED: Write assertions for onBlur invalid aria attributes, error alerts, lockout after 3 attempts, and Sentry.setUser calls.
+ *      GREEN: Implement onBlur state tracking, account lockout handling, and Sentry context attachment.
+ *      REFACTOR: Decouple password validation logic into reusable validatePassword utility.
+ * @see docs/PROMPT_JOURNEY.md#33-auth--form-validation-on-blur
+ */
 describe('LoginDemo', () => {
   const validPassword = 'ValidPassword123!'
   const demoEmail = 'demo@example.com'

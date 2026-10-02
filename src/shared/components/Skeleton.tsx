@@ -15,6 +15,11 @@ const VARIANT_CLASSES: Record<SkeletonVariant, string> = {
   circular: 'rounded-full',
 }
 
+/**
+ * Accessible Skeleton loading placeholder component.
+ * @prompt Implement an accessible Skeleton component using TDD with role="status", aria-hidden support, and pulse animations.
+ * @see docs/PROMPT_JOURNEY.md#21-skeleton--loading-placeholders
+ */
 export function Skeleton({
   variant = 'text',
   width,

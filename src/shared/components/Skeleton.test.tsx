@@ -2,6 +2,14 @@ import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { Skeleton } from './Skeleton'
 
+/**
+ * @prompt Implement an accessible Skeleton component using TDD (Red -> Green -> Refactor)
+ *         verifying role, pulse animation, variants ('text', 'circular', 'rectangular'), and custom dimensions.
+ * @tdd RED: Write assertions for role="status", animate-pulse, variant classes, and style sizing before component creation.
+ *      GREEN: Implement Skeleton component satisfying all tests.
+ *      REFACTOR: Extract variant dictionary and support className overrides.
+ * @see docs/PROMPT_JOURNEY.md#21-skeleton--loading-placeholders
+ */
 describe('Skeleton', () => {
   it('renders with role="status" and animate-pulse class', () => {
     render(<Skeleton />)

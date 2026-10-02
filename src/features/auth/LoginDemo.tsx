@@ -10,6 +10,11 @@ const MAX_FAILED_ATTEMPTS = 3
 const DEMO_EMAIL = 'demo@example.com'
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+/**
+ * Authentication demo component with accessible form validation and Sentry user telemetry.
+ * @prompt Implement LoginDemo with onBlur email feedback, account lockout, and Sentry user tracking.
+ * @see docs/PROMPT_JOURNEY.md#33-auth--form-validation-on-blur
+ */
 export function LoginDemo() {
   const [email, setEmail] = useState('')
   const [emailTouched, setEmailTouched] = useState(false)

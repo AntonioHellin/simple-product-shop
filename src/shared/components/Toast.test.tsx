@@ -2,6 +2,14 @@ import { render, screen, fireEvent, act } from '@testing-library/react'
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { Toast } from './Toast'
 
+/**
+ * @prompt Create a Toast notification component using TDD with success, error, info variants,
+ *         accessible close button, and auto-dismiss timer.
+ * @tdd RED: Write assertions for role="alert", variant colors, manual close trigger, and fake timer auto-dismiss.
+ *      GREEN: Implement Toast component with useEffect timeout cleanup and accessible SVG icons.
+ *      REFACTOR: Consolidate variant styles dictionary and aria-live configurations.
+ * @see docs/PROMPT_JOURNEY.md#22-toast-notification-system
+ */
 describe('Toast', () => {
   afterEach(() => {
     vi.useRealTimers()

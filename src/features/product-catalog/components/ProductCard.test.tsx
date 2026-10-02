@@ -12,6 +12,14 @@ const mockProduct: Product = {
   description: 'A test product description for testing purposes.',
 }
 
+/**
+ * @prompt Enhance ProductCard "Add to Cart" button with multi-state visual feedback (idle, loading, success, error)
+ *         and state transition assertions.
+ * @tdd RED: Write assertions verifying loading/disabled states, success label timer, and error fallback/retry.
+ *      GREEN: Implement button state transitions and async callback error handling.
+ *      REFACTOR: Maintain debounce / revert timer cleanup on unmount.
+ * @see docs/PROMPT_JOURNEY.md#23-product-card-with-dynamic-feedback
+ */
 describe('ProductCard', () => {
   afterEach(() => {
     vi.useRealTimers()

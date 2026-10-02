@@ -8,6 +8,11 @@ export interface DiscountBreakdownItem {
   amount: number
 }
 
+/**
+ * Context class coordinating discount strategy evaluation.
+ * @prompt Implement Strategy Pattern orchestrator computing best discounts and breakdowns.
+ * @see docs/PROMPT_JOURNEY.md#24-discount-strategy-engine-oop-pattern
+ */
 export class DiscountCalculator {
   private strategies: DiscountStrategy[]
 

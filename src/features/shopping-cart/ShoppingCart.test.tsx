@@ -22,6 +22,14 @@ const mockItem: CartItemType = {
   quantity: 2,
 }
 
+/**
+ * @prompt Add accessibility improvements to ShoppingCart with aria-live="polite",
+ *         .sr-only updates, and descriptive aria-labels for item quantity actions.
+ * @tdd RED: Write assertions for live region announcements on empty vs filled cart, and accessible button names.
+ *      GREEN: Implement live region container and aria-label bindings on controls.
+ *      REFACTOR: Maintain singular/plural wording ("1 item" vs "N items").
+ * @see docs/PROMPT_JOURNEY.md#31-screen-reader-announcements-aria-live
+ */
 describe('ShoppingCart', () => {
   const updateQuantityMock = vi.fn()
   const removeItemMock = vi.fn()
