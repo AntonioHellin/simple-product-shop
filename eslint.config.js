@@ -4,7 +4,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y'
 
 export default tseslint.config(
   {
-    ignores: ['dist/**', 'node_modules/**', 'test-results/**', 'playwright-report/**', 'e2e/**', 'coverage/**'],
+    ignores: ['dist/**', 'node_modules/**', 'test-results/**', 'playwright-report/**', 'e2e/**', 'coverage/**', 'coverage-report/**'],
   },
   jsxA11y.flatConfigs.recommended,
   {
